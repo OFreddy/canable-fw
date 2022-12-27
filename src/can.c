@@ -84,7 +84,11 @@ void can_enable(void)
         HAL_CAN_Start(&can_handle);
         bus_state = ON_BUS;
 
+#ifdef CANABLE_HW
         led_blue_on();
+#else
+		led_link_on();
+#endif
     }
 }
 
@@ -97,8 +101,11 @@ void can_disable(void)
         // Do a bxCAN reset (set RESET bit to 1)
     	can_handle.Instance->MCR |= CAN_MCR_RESET;
         bus_state = OFF_BUS;
-
+#ifdef CANABLE_HW
         led_green_on();
+#else
+        led_link_off();
+#endif
     }
 }
 
@@ -143,7 +150,11 @@ void can_set_bitrate(enum can_bitrate bitrate)
             break;
     }
 
+#ifdef CANABLE_HW
     led_green_on();
+#else
+    led_link_off();
+#endif
 }
 
 
@@ -162,7 +173,11 @@ void can_set_silent(uint8_t silent)
     	can_handle.Init.Mode = CAN_MODE_NORMAL;
     }
 
+#ifdef CANABLE_HW
     led_green_on();
+#else
+    led_link_off();
+#endif
 }
 
 
@@ -181,7 +196,11 @@ void can_set_autoretransmit(uint8_t autoretransmit)
     	can_autoretransmit = DISABLE;
     }
 
+#ifdef CANABLE_HW
     led_green_on();
+#else
+    led_link_off();
+#endif
 }
 
 
@@ -221,8 +240,11 @@ void can_process(void)
 		uint32_t status = HAL_CAN_AddTxMessage(&can_handle, &txqueue.header[txqueue.tail], txqueue.data[txqueue.tail], &mailbox_txed);
 		txqueue.tail = (txqueue.tail + 1) % TXQUEUE_LEN;
 
+#ifdef CANABLE_HW
 		led_green_on();
-
+#else
+		led_tx_on();
+#endif
 		// This drops the packet if it fails (no retry). Failure is unlikely
 		// since we check if there is a TX mailbox free.
 		if(status != HAL_OK)
@@ -237,7 +259,11 @@ void can_process(void)
 uint32_t can_rx(CAN_RxHeaderTypeDef *rx_msg_header, uint8_t* rx_msg_data)
 {
     uint32_t status = HAL_CAN_GetRxMessage(&can_handle, CAN_RX_FIFO0, rx_msg_header, rx_msg_data);
+#ifdef CANABLE_HW
 	led_blue_on();
+#else
+	led_rx_on();
+#endif
     return status;
 }
 

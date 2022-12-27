@@ -22,7 +22,11 @@ int main(void)
     led_init();
     usb_init();
 
+#ifdef CANABLE_HW
     led_blue_blink(2);
+#else
+    led_link_blink(2);
+#endif
 
     // Storage for status and received message buffer
     CAN_RxHeaderTypeDef rx_msg_header;
