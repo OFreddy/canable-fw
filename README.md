@@ -31,6 +31,8 @@ This firmware currently does not provide any ACK/NACK feedback for serial comman
 
 ## Building
 
+[Notes on building CANable firmware](docs/build-canable-fw.md)
+
 Firmware builds with GCC. Specifically, you will need gcc-arm-none-eabi, which
 is packaged for Windows, OS X, and Linux on
 [Launchpad](https://launchpad.net/gcc-arm-embedded/+download). Download for your
